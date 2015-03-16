@@ -10,12 +10,9 @@ public class BigInteger {
 	long[] number;
 	int sign = 1;
 
-	// implement this
-	public static final Pattern EXPRESSION_PATTERN = Pattern
-			.compile("([+-]{0,1}[0-9]{1,})([+*-])([+-]{0,1}[0-9]{1,})");
+	public static final Pattern EXPRESSION_PATTERN = Pattern.compile("([+-]{0,1}[0-9]{1,})([+*-])([+-]{0,1}[0-9]{1,})");
 
-	// contents
-	public BigInteger(long[] num1, int sign) {
+	public BigInteger(long[] num1, int sign) { // an initializer with array of long and its sign
 		this.number = new long[num1.length];
 		this.sign = sign;
 		for (int i = 0; i < num1.length; i++) {
@@ -23,7 +20,7 @@ public class BigInteger {
 		}
 	}
 
-	public BigInteger(String s) {
+	public BigInteger(String s) { // initialize from string
 		this.number = new long[((s.length() - 1) / 9) + 1];
 		switch ("+-".indexOf(s.charAt(0))) {
 		case 1:
@@ -32,29 +29,24 @@ public class BigInteger {
 			s = s.substring(1, s.length());
 		}
 		for (int i = 0; s.length() > 0; i++) {
-			number[i] = Long.valueOf(s.substring(
-					s.length() - 9 > 0 ? s.length() - 9 : 0, s.length()));
+			number[i] = Long.valueOf(s.substring(s.length() - 9 > 0 ? s.length() - 9 : 0, s.length()));
 			s = s.substring(0, s.length() - 9 > 0 ? s.length() - 9 : 0);
 		}
 	}
 
 	public BigInteger add(BigInteger other) {
 		int sign;
-		long[] bigger = this.number.length > other.number.length ? this.number
-				: other.number;
-		long[] smaller = this.number.length < other.number.length ? this.number
-				: other.number;
+		long[] bigger = this.number.length > other.number.length ? this.number : other.number;
+		long[] smaller = this.number.length < other.number.length ? this.number : other.number;
 		long[] result = new long[bigger.length];
 		if (this.number.length == other.number.length) {
-			sign = this.number[this.number.length - 1] > other.number[other.number.length - 1] ? this.sign
-					: other.sign;
-		} else
-			sign = this.number.length > other.number.length ? this.sign
-					: other.sign;
+			sign = this.number[this.number.length - 1] > other.number[other.number.length - 1] ? this.sign : other.sign;
+		} else {
+			sign = this.number.length > other.number.length ? this.sign : other.sign;
+		}
 		for (int i = 0; i < bigger.length; i++) {
 			for (; i < smaller.length; i++)
-				result[i] = this.sign * this.number[i] + other.sign
-						* other.number[i];
+				result[i] = this.sign * this.number[i] + other.sign * other.number[i];
 			if (bigger.length == i)
 				break;
 			result[i] = sign * bigger[i];
@@ -68,27 +60,27 @@ public class BigInteger {
 				result[i + 1] += sign;
 			}
 		}
-		if (sign * result[result.length - 1] > max) {
-			result[result.length - 1] = sign;
-			result[result.length - 2] -= sign * max;
-		}
 		return new BigInteger(result, sign);
 	}
 
 	public BigInteger multiply(BigInteger other) {
 		int sign = this.sign * other.sign;
-		long[] bigger = this.number.length > other.number.length ? this.number
-				: other.number;
-		long[] smaller = this.number.length < other.number.length ? this.number
-				: other.number;
-		long[] result = new long[bigger.length + smaller.length];
-
+		long[] result = new long[this.number.length + other.number.length];
+		for (int i = 0; i < this.number.length; i++) {
+			for (int j = 0; j < other.number.length; j++)
+				result[i + j] += sign*this.number[i] * other.number[j];
+		}
+		for (int i = 0; i < result.length - 1; i++) {
+			if (result[i] >= max) {
+				result[i + 1] += result[i] / max;
+				result[i] %= max;
+			}
+		}
 		return new BigInteger(result, sign);
 	}
 
 	public BigInteger negative() {
-		this.sign = ~this.sign;
-		this.sign++;
+		this.sign = -this.sign;
 		return this;
 	}
 
@@ -97,9 +89,7 @@ public class BigInteger {
 		String result = "";
 		for (int i = this.number.length - 1; i >= 0; i--) {
 			String t = String.valueOf(this.number[i]);
-			result += "000000000".substring(0,
-					9 - t.length() > 0 ? 9 - t.length() : 0)
-					+ t;
+			result += "000000000".substring(0, 9 - t.length() > 0 ? 9 - t.length() : 0) + t;
 		}
 		while (result.indexOf("0") == 0 && result.length() > 1)
 			result = result.substring(1, result.length());
@@ -109,8 +99,7 @@ public class BigInteger {
 	static BigInteger evaluate(String input) throws IllegalArgumentException {
 		Matcher m = EXPRESSION_PATTERN.matcher(input);
 		m.find();
-		BigInteger left = new BigInteger(m.group(1)), right = new BigInteger(
-				m.group(3));
+		BigInteger left = new BigInteger(m.group(1)), right = new BigInteger(m.group(3));
 		switch ("+-*".indexOf(m.group(2))) {
 		case 0:
 			left = left.add(right);
