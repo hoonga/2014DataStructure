@@ -67,13 +67,12 @@ public class BigInteger {
 		int sign = this.sign * other.sign;
 		long[] result = new long[this.number.length + other.number.length];
 		for (int i = 0; i < this.number.length; i++) {
-			for (int j = 0; j < other.number.length; j++)
+			for (int j = 0; j < other.number.length; j++){
 				result[i + j] += sign*this.number[i] * other.number[j];
-		}
-		for (int i = 0; i < result.length - 1; i++) {
-			if (result[i] >= max) {
-				result[i + 1] += result[i] / max;
-				result[i] %= max;
+				if(result[i+j]*sign >= max){
+					result[i + j + 1] += result[i + j] / max;
+					result[i + j] %= max;
+				}
 			}
 		}
 		return new BigInteger(result, sign);
@@ -135,6 +134,7 @@ public class BigInteger {
 		if (quit) {
 			return true;
 		} else {
+			input = input.replaceAll(" ", "");
 			BigInteger result = evaluate(input);
 			System.out.println(result.toString());
 			return false;
