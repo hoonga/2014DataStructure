@@ -60,7 +60,12 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 
 	public int size() {
 		// FIXME implement this
-		return head != null ? 1 : 0;
+		if (this.head == null)
+			return 0;
+		int i = 0;
+		for (Node<T> n = this.head; n.next != null; i++)
+			n = n.next;
+		return i;
 	}
 
 	public T first() {
