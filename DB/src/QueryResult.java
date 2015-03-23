@@ -22,7 +22,10 @@ public class QueryResult implements Comparable<QueryResult> {
 	@Override
 	public int compareTo(QueryResult other) {
 		// TODO delete the line below and implement this method
-		throw new UnsupportedOperationException();
+		if (this.genre.equals(other.genre))
+			return this.title.compareTo(other.title);
+		else
+			return this.genre.compareTo(other.genre);
 	}
 
 	@Override

@@ -2,9 +2,12 @@ class Genre implements Comparable<Genre> {
 	// FIXME implement this
 	// Implement a Genre class.
 	String name;// This class should hold the name of the genre.
-	MyLinkedList<String> list;// This class should maintain a linked list of movie titles for this genre.
+	MyLinkedList<String> titles;// This class should maintain a linked list of
+								// movie titles for this genre.
+
 	public Genre(String name) {
 		this.name = name;
+		this.titles = new MyLinkedList<String>();
 	}
 
 	@Override
@@ -14,12 +17,17 @@ class Genre implements Comparable<Genre> {
 
 	@Override
 	public boolean equals(Object other) {
-		if (this == other) return true;
-		if (! (other instanceof Genre)) return false;
+		if (this == other)
+			return true;
+		if (!(other instanceof Genre))
+			return false;
 
 		// TODO implement by yourself to test equality,
 		// or use 'Source' - 'Generate hashCode() and equals() ...'
-		return true;
+		if (this.hashCode() != other.hashCode())
+			return false;
+		else
+			return true;
 	}
 
 	@Override
@@ -27,7 +35,12 @@ class Genre implements Comparable<Genre> {
 		// TODO implement by yourself,
 		// or use 'Source' - 'Generate hashCode() and equals() ...'
 		// MAKE SURE THAT THE IMPLEMENTATION IS COMPATIBLE WITH equals()
-		return 0;
+		char[] c = this.name.toCharArray();
+		String s = "";
+		for (int i = 0; i < c.length; i++) {
+			s += Integer.toString((int) c[i]);
+		}
+		return Integer.valueOf(s) % Integer.MAX_VALUE;
 	}
 
 	@Override

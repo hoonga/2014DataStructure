@@ -32,7 +32,7 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 		if (this.head == null) {
 			this.head = newNode;
 			return true;
-		} else if (this.head.item.compareTo(obj) < 0) {
+		} else if (this.head.item.compareTo(obj) > 0) {
 			newNode.next = this.head;
 			this.head = newNode;
 			return true;
@@ -40,8 +40,9 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 			Node<T> cur = head;
 			while (cur.next != null) {
 				if (cur.item.equals(obj))
-					return false;
-				if (cur.next.item.compareTo(obj)<0){
+					return true;
+				;
+				if (cur.next.item.compareTo(obj) > 0) {
 					newNode.next = cur.next;
 					cur.next = newNode;
 					return true;
@@ -55,14 +56,23 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 
 	public boolean remove(T obj) {
 		// FIXME implement this
-		throw new UnsupportedOperationException();
+		if (this.head.item.equals(obj)){
+			this.head = this.head.next;
+		} 
+		Node<T> n = this.findPrev(obj);
+		if (n == null)
+			return false;
+		else {
+			n.next = n.next.next;
+			return true;
+		}
 	}
 
 	public int size() {
 		// FIXME implement this
 		if (this.head == null)
 			return 0;
-		int i = 0;
+		int i = 1;
 		for (Node<T> n = this.head; n.next != null; i++)
 			n = n.next;
 		return i;
@@ -90,5 +100,33 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 		while (result.next != null)
 			result = result.next;
 		return result.item;
+	}
+
+	public T find(T obj) {
+		if (this.head == null)
+			return null;
+		else {
+			Node<T> cur = this.head;
+			while (cur.next != null) {
+				if (cur.item.equals(obj))
+					return cur.item;
+				cur = cur.next;
+			}
+			return cur.item;
+		}
+	}
+
+	public Node<T> findPrev(T obj) {
+		if (this.head == null)
+			return null;
+		else {
+			Node<T> cur = this.head;
+			while (cur.next != null) {
+				if (cur.next.item.equals(obj))
+					return cur;
+				cur = cur.next;
+			}
+			return null;
+		}
 	}
 }

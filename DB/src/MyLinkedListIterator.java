@@ -19,8 +19,9 @@ public class MyLinkedListIterator<T extends Comparable<T>> implements Iterator<T
 	public boolean hasNext() {
 		if (this.CurrentNode != null)
 			return (CurrentNode.next!=null);
-		else
-			return false;
+		else {
+			return l.head != null;
+		}
 	}
 
 	@Override
