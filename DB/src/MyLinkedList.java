@@ -58,6 +58,7 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 		// FIXME implement this
 		if (this.head.item.equals(obj)){
 			this.head = this.head.next;
+			return true;
 		} 
 		Node<T> n = this.findPrev(obj);
 		if (n == null)

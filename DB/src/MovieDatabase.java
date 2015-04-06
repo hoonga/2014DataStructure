@@ -24,9 +24,11 @@ public class MovieDatabase {
 		// Printing functionality is provided for the sake of debugging.
 		// This code should be removed before submitting your work.
 		Genre g = new Genre(genre);
-		if (this.genres.find(g).titles.remove(title)) {
+		if ((g = this.genres.find(g))!=null) {
+			if(g.titles.remove(title)){
 			if (this.genres.find(g).titles.size() == 0)
 				this.genres.remove(g);
+			}
 		}
 		//System.err.printf("[trace] DELETE [%s] [%s]\n", genre, title);
 	}

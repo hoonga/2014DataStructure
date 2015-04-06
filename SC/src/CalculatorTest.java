@@ -5,8 +5,8 @@ import java.io.*;
 public class CalculatorTest {
 	public static final String QUIT_COMMAND = "q";
 	public static final String MSG_ERROR = "ERROR";
-	public static final Pattern EXPRESSION = Pattern.compile("([(].*[)]|-?\\d+)([*^%/+-])([(].*[)]|-?\\d+)");
-	public static final Pattern PARENTHESIS = Pattern.compile("");
+	public static final Pattern EXPRESSION = Pattern.compile("([(].*[)]|\\d+|[+^*/%-])");
+	public static final Pattern PARENTHESIS = Pattern.compile("[(](.*)[)]");
 	
 	public static void main(String args[]) throws Exception {
 		try (InputStreamReader isr = new InputStreamReader(System.in)) {
@@ -90,28 +90,50 @@ public class CalculatorTest {
 	static String toPostfix(String input){
 		Stack<Operator> opstack = new Stack<Operator>();
 		String result = "";
-		while (input.length()!=0){
+		String previous = "a";
+		while (input.length()!= 0){
 			Matcher m = EXPRESSION.matcher(input);
-			if(m.find()){
-				input = input.replace(m.group(), "");
-				if (m.group(1).contains("(")){
-					m = PARENTHESIS.matcher(m.group(1));
-					result += (toPostfix(m.group()) + " ");
-				} else
-					result += m.group(1);
-				Operator op = new Operator(m.group(2));
-				if (!opstack.isEmpty()){
-					Operator last = opstack.peek();
-					if (last.compareTo(op)>=0)
-						opstack.push(op);
-					else
-						result += opstack.pop().toString() + " ";
+			if(!m.find())
+				throw new IllegalArgumentException();
+			else{
+				input = input.substring(input.indexOf(m.group())+m.group().length(),input.length());
+				if(m.group().matches("\\d+")){
+					if (previous.matches("\\d+"))
+						throw new IllegalArgumentException();
+					result += m.group() + " ";
+					previous = m.group();
 				}
-				if (m.group(3).contains("(")){
-					m = PARENTHESIS.matcher(m.group(3));
-					result += (toPostfix(m.group()) + " ");
+				else if (m.group().matches("[+^*/%-]")){
+					if (previous.matches("[+^*/%-]")&&m.group().equals("-")){
+						result += "~ ";
+						previous = m.group();
+					}
+					else if (previous.matches("[+^*/%-]")&&!m.group().equals("-"))
+						throw new IllegalArgumentException();
+					else if (previous.matches("\\d+")){
+						Operator op = new Operator(m.group());
+						if (opstack.isEmpty()){
+							opstack.push(op);
+							previous = m.group();
+						} else {
+							if(opstack.peek().compareTo(op)>0){
+								result += opstack.pop().toString() + " ";
+								opstack.push(op);
+							} else
+								opstack.push(op);
+							previous = m.group();
+						}
+					}
+				} else if (m.group().matches("[(].*[)]")){
+					m = PARENTHESIS.matcher(m.group(1));
+					if (m.matches()){
+						result += toPostfix(m.group(1)) + " ";
+						previous = "0";
+					}
+					else
+						throw new IllegalArgumentException();
 				} else
-					result += m.group(3) + " ";
+					throw new IllegalArgumentException();
 			}
 		}
 		while (!opstack.isEmpty()){
