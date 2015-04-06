@@ -41,7 +41,6 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 			while (cur.next != null) {
 				if (cur.item.equals(obj))
 					return true;
-				;
 				if (cur.next.item.compareTo(obj) > 0) {
 					newNode.next = cur.next;
 					cur.next = newNode;
@@ -49,6 +48,8 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 				}
 				cur = cur.next;
 			}
+			if (cur.item.equals(obj))
+				return true;
 			cur.next = newNode;
 			return true;
 		}
@@ -56,6 +57,8 @@ public class MyLinkedList<T extends Comparable<T>> implements Iterable<T> {
 
 	public boolean remove(T obj) {
 		// FIXME implement this
+		if (this.head == null)
+			return false;
 		if (this.head.item.equals(obj)){
 			this.head = this.head.next;
 			return true;
