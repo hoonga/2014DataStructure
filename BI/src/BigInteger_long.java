@@ -3,41 +3,42 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BigInteger {
+public class BigInteger_long {
 	public static final String QUIT_COMMAND = "quit";
-	public static final String MSG_INVALID_INPUT = "ÀÔ·ÂÀÌ Àß¸øµÇ¾ú½À´Ï´Ù.";
-	public static final byte max = 10;
-	byte[] number;
-	byte sign = 1;
+	public static final String MSG_INVALID_INPUT = "ï¿½ì—¯ï¿½ì °ï¿½ì”  ï¿½ì˜’ï§ì‚³ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–.";
+	public static final long max = 1000000000L;
+	long[] number;
+	int sign = 1;
 
-	public static final Pattern EXPRESSION_PATTERN = Pattern.compile("([+-]?[0-9]+)([+*-])([+-]?[0-9]+)");
+	public static final Pattern EXPRESSION_PATTERN = Pattern.compile("([+-]{0,1}[0-9]{1,})([+*-])([+-]{0,1}[0-9]{1,})");
 
-	public BigInteger(byte[] num1, byte sign) { // an initializer with array of byte and its sign
-		this.number = new byte[num1.length];
+	public BigInteger_long(long[] num1, int sign) { // an initializer with array of long and its sign
+		this.number = new long[num1.length];
 		this.sign = sign;
 		for (int i = 0; i < num1.length; i++) {
-			this.number[i] = (byte) (sign * num1[i]);
+			this.number[i] = sign * num1[i];
 		}
 	}
 
-	public BigInteger(String s) { // initialize from string
+	public BigInteger_long(String s) { // initialize from string
+		this.number = new long[((s.length() - 1) / 9) + 1];
 		switch ("+-".indexOf(s.charAt(0))) {
 		case 1:
-			this.sign = (byte) -1;
+			this.sign = -1;
 		case 0:
 			s = s.substring(1, s.length());
 		}
-		this.number = new byte[s.length()];
-		for (int i = 0; i < s.length(); i++) {
-			this.number[i] = Byte.valueOf(s.substring(s.length()-i-1, s.length()-i));
+		for (int i = 0; s.length() > 0; i++) {
+			number[i] = Long.valueOf(s.substring(s.length() - 9 > 0 ? s.length() - 9 : 0, s.length()));
+			s = s.substring(0, s.length() - 9 > 0 ? s.length() - 9 : 0);
 		}
 	}
 
-	public BigInteger add(BigInteger other) {
-		byte sign;
-		byte[] bigger = this.number.length > other.number.length ? this.number : other.number;
-		byte[] smaller = this.number.length < other.number.length ? this.number : other.number;
-		byte[] result = new byte[bigger.length];
+	public BigInteger_long add(BigInteger_long other) {
+		int sign;
+		long[] bigger = this.number.length > other.number.length ? this.number : other.number;
+		long[] smaller = this.number.length < other.number.length ? this.number : other.number;
+		long[] result = new long[bigger.length];
 		if (this.number.length == other.number.length) {
 			sign = this.number[this.number.length - 1] > other.number[other.number.length - 1] ? this.sign : other.sign;
 		} else {
@@ -45,10 +46,10 @@ public class BigInteger {
 		}
 		for (int i = 0; i < bigger.length; i++) {
 			for (; i < smaller.length; i++)
-				result[i] = (byte) (this.sign * this.number[i] + other.sign * other.number[i]);
+				result[i] = this.sign * this.number[i] + other.sign * other.number[i];
 			if (bigger.length == i)
 				break;
-			result[i] = (byte) (sign * bigger[i]);
+			result[i] = sign * bigger[i];
 		}
 		for (int i = 0; i < result.length - 1; i++) {
 			if (sign * result[i] < 0) {
@@ -59,12 +60,12 @@ public class BigInteger {
 				result[i + 1] += sign;
 			}
 		}
-		return new BigInteger(result, sign);
+		return new BigInteger_long(result, sign);
 	}
 
-	public BigInteger multiply(BigInteger other) {
-		byte sign = (byte) (this.sign * other.sign);
-		byte[] result = new byte[this.number.length + other.number.length];
+	public BigInteger_long multiply(BigInteger_long other) {
+		int sign = this.sign * other.sign;
+		long[] result = new long[this.number.length + other.number.length];
 		for (int i = 0; i < this.number.length; i++) {
 			for (int j = 0; j < other.number.length; j++){
 				result[i + j] += sign*this.number[i] * other.number[j];
@@ -74,11 +75,11 @@ public class BigInteger {
 				}
 			}
 		}
-		return new BigInteger(result, sign);
+		return new BigInteger_long(result, sign);
 	}
 
-	public BigInteger negative() {
-		this.sign = (byte) -this.sign;
+	public BigInteger_long negative() {
+		this.sign = -this.sign;
 		return this;
 	}
 
@@ -86,17 +87,18 @@ public class BigInteger {
 	public String toString() {
 		String result = "";
 		for (int i = this.number.length - 1; i >= 0; i--) {
-			result += String.valueOf(this.number[i]); 
+			String t = String.valueOf(this.number[i]);
+			result += "000000000".substring(0, 9 - t.length() > 0 ? 9 - t.length() : 0) + t;
 		}
 		while (result.indexOf("0") == 0 && result.length() > 1)
 			result = result.substring(1, result.length());
 		return (this.sign > 0 || result.equals("0") ? "" : "-") + result;
 	}
 
-	static BigInteger evaluate(String input) throws IllegalArgumentException {
+	static BigInteger_long evaluate(String input) throws IllegalArgumentException {
 		Matcher m = EXPRESSION_PATTERN.matcher(input);
 		m.find();
-		BigInteger left = new BigInteger(m.group(1)), right = new BigInteger(m.group(3));
+		BigInteger_long left = new BigInteger_long(m.group(1)), right = new BigInteger_long(m.group(3));
 		switch ("+-*".indexOf(m.group(2))) {
 		case 0:
 			left = left.add(right);
@@ -133,7 +135,7 @@ public class BigInteger {
 			return true;
 		} else {
 			input = input.replaceAll(" ", "");
-			BigInteger result = evaluate(input);
+			BigInteger_long result = evaluate(input);
 			System.out.println(result.toString());
 			return false;
 		}

@@ -9,9 +9,10 @@ public abstract class AbstractCommand implements Command {
 		if (args.isEmpty()) {
 			return new String[] {};
 		} else {
-			args = args.replaceFirst("%", "");
+			args = args.trim();
+			args = args.replaceFirst(" {0,}%", "");
 			args = args.substring(0, args.length()-1);
-			return args.split("% +%");
+			return args.split("% {0,}%");
 		}
 	}
 

@@ -34,6 +34,7 @@ public class MovieDatabaseConsole {
 				if (input.isEmpty())
 					continue;
 
+				/*previous source code - delete comments
 				String[] inputs = input.split(" ", 2);
 
 				String cmd = inputs[0].toUpperCase();
@@ -47,6 +48,23 @@ public class MovieDatabaseConsole {
 					throw new CommandNotFoundException(cmd);
 
 				String arguments = inputs.length > 1 ? inputs[1] : "";
+				*/
+
+				//fixed ver.
+				int cmdindex = input.indexOf("%");
+				String cmd = cmdindex < 0 ? input.toUpperCase() : input.substring(0, cmdindex).toUpperCase();
+				cmd = cmd.trim();
+
+				if (cmd.equals("QUIT"))
+					break;
+
+				Command command = commands.get(cmd);
+
+				if (command == null)
+					throw new CommandNotFoundException(cmd);
+
+				String arguments = cmdindex < 0 ? "" : input.substring(cmdindex);
+				//end
 
 				command.apply(db, arguments);
 			} catch (CommandParseException e) {

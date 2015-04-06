@@ -35,12 +35,7 @@ class Genre implements Comparable<Genre> {
 		// TODO implement by yourself,
 		// or use 'Source' - 'Generate hashCode() and equals() ...'
 		// MAKE SURE THAT THE IMPLEMENTATION IS COMPATIBLE WITH equals()
-		char[] c = this.name.toCharArray();
-		String s = "";
-		for (int i = 0; i < c.length; i++) {
-			s += Integer.toString((int) c[i]);
-		}
-		return Integer.valueOf(s) % Integer.MAX_VALUE;
+		return this.name.hashCode();
 	}
 
 	@Override

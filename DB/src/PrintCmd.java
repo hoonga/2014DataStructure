@@ -6,8 +6,14 @@ public class PrintCmd extends AbstractCommand {
 		checkArga(arga);
 		MyLinkedList<QueryResult> result = db.search(null);
 
-		for (QueryResult item: result) {
-			System.out.printf("(%s, %s)\n", item.getGenre(), item.getTitle());
+		//FIXED
+		if(result.size() != 0) {
+			for (QueryResult item : result) {
+				System.out.printf("(%s, %s)\n", item.getGenre(), item.getTitle());
+			}
+		}
+		else {
+			System.out.printf("EMPTY\n");
 		}
 	}
 

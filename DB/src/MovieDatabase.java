@@ -15,7 +15,7 @@ public class MovieDatabase {
 		Genre g = new Genre(genre);
 		this.genres.add(g);
 		this.genres.find(g).titles.add(title);
-		System.err.printf("[trace] INSERT [%s] [%s]\n", genre, title);
+		//System.err.printf("[trace] INSERT [%s] [%s]\n", genre, title);
 	}
 
 	public void delete(String genre, String title) {
@@ -28,7 +28,7 @@ public class MovieDatabase {
 			if (this.genres.find(g).titles.size() == 0)
 				this.genres.remove(g);
 		}
-		System.err.printf("[trace] DELETE [%s] [%s]\n", genre, title);
+		//System.err.printf("[trace] DELETE [%s] [%s]\n", genre, title);
 	}
 
 	public MyLinkedList<QueryResult> search(String term) {
@@ -38,7 +38,7 @@ public class MovieDatabase {
 		// The search command is handled at SearchCmd.java.
 		// Printing functionality is provided for the sake of debugging.
 		// This code should be removed before submitting your work.
-		System.err.printf("[trace] SEARCH [%s]\n", term);
+		//System.err.printf("[trace] SEARCH [%s]\n", term);
 
 		MyLinkedList<QueryResult> results = new MyLinkedList<QueryResult>();
 		MyLinkedListIterator<Genre> i = (MyLinkedListIterator<Genre>) this.genres

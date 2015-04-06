@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.Map.Entry;
 import java.io.*;
 
 class Subway {
@@ -43,8 +44,10 @@ class Subway {
 	String[] find(String start, String dest) {
 		Queue<String> q = new LinkedList<String>();
 		HashMap<String, Integer> d = new HashMap<String, Integer>();
+		HashSet<String> visited = new HashSet<String>();
 		HashMap<String, String> comesbefore = new HashMap<String, String>();
 		Stack<String> result = new Stack<String>();
+		visited.add(start);
 		d.put(start, 0);
 		q.offer(start);
 		while (!q.isEmpty()) {
@@ -64,6 +67,7 @@ class Subway {
 						d.put(e.destination, d.get(cur_station) + e.cost);
 					}
 				}
+				Iterator<Entry<String,Integer>> j = d.entrySet().iterator();
 			}
 		}
 		return null;
